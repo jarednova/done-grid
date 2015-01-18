@@ -19,30 +19,34 @@
 	</div>
   </nav>
   
-  <div id="main">
-<table class="day-grid">
-	<tr>
-		<th>Week <span class="bp-768">of</span></th>
-		{{#each daysOfWeek }}
-			<th>
-				<span class="letter">{{letter}}</span>
-				<span class="short-name">{{shortName}}</span>
-				<span class="full-name">{{fullName}}</span>
-			</th>
-		{{/each}}
-		<th>Score</th>
-	</tr>
-	{{#each weeks}}
- 		{{> week}}
-  	{{/each}}
-</table>
-</div>
+	<div id="main">
+		{{> grid}}
+	</div>
 
 <label class="show-total-score">
 	<input type="checkbox" checked="{{showTotalScore}}" />
   	Show Total Score
 </label>
 </body>
+
+<template name="grid">
+	<table class="day-grid">
+		<tr>
+			<th>Week <span class="bp-768">of</span></th>
+			{{#each daysOfWeek }}
+				<th>
+					<span class="letter">{{letter}}</span>
+					<span class="short-name">{{shortName}}</span>
+					<span class="full-name">{{fullName}}</span>
+				</th>
+			{{/each}}
+			<th>Score</th>
+		</tr>
+		{{#each weeks}}
+	 		{{> week}}
+	  	{{/each}}
+	</table>
+</template>
 
 <template name="week">
 	<tr>

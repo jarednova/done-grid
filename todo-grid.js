@@ -1,5 +1,6 @@
 var Days = new Mongo.Collection("days");
 //Session.set('Days', Days);
+console.log('Days', Days);
 var start = new Date();
 
 function User(userId) {
@@ -7,11 +8,8 @@ function User(userId) {
 }
 
 User.prototype.getDefaultGrid = function() {
- // var Days = Session.get('Days');
   var day = Days.findOne( {owner: this.userId}, {sort: {createdAt: -1}} );
-  //var day = Days.findOne( {owner: this.userId} );
-  console.log(day);
-  var grid = new Grid(this.userId);
+  var grid = new Grid(this.userId, 'exercise');
   return grid;
 }
 
@@ -21,20 +19,14 @@ function Grid(userId, gridName) {
   this.gridName = gridName;
   if (gridName == null) {
     var grid = this.user.getDefaultGrid();
-    console.log('grid', grid);
-    this.gridName = grid.name();
+    this.gridName = 'exercise';
   }
-  this.name = this.name();
+  this.name = this.gridName;
 }
 
 Grid.prototype.isNumeric = function() {
 
 }; 
-
-Grid.prototype.name = function() {
-  return 'exercise';
-  return this.gridName;
-}
 
 function onDayEnter(event) {
   var $input = $(event.currentTarget);
@@ -45,7 +37,7 @@ function onDayEnter(event) {
     var obj = {
       date:date,
       note:note,
-      gridName: Session.get('grid').name,
+      gridName: 'exercise',
       createdAt : new Date(),
       owner:Meteor.userId()
     };
@@ -81,6 +73,7 @@ function getUsername() {
 }
 
 function buildWeeks( startDate, limit, Days ) {
+  console.log('buildWeeks');
   var weeks = new Array();
 
   var $startDate = moment(startDate);
@@ -123,6 +116,7 @@ function buildDay( date, Days ) {
 
   //var day = Meteor.subscribe('day', Meteor.userId, myDate, 'exercise');
   var day = Days.findOne({date:myDate, owner: Meteor.userId(), gridName: 'exercise' });
+  console.log('day', day);
   if (!day) {
     day = {};
     day.date = new Date(myDate);
@@ -138,15 +132,17 @@ function buildDay( date, Days ) {
 }
 
 if (Meteor.isClient) {
-  Template.body.helpers({
-    username : getUsername(),
-    grid : function() {
-      return Session.get('grid');
-    },
+  Template.grid.helpers({
     weeks : function(){
       return buildWeeks(start, 10, Days);
     },
     daysOfWeek : buildDaysOfWeek(),
+  });
+
+  Template.body.helpers({
+    username : getUsername(),
+    
+    
     showTotalScore : function () {
       return Session.get("showTotalScore");
     }
@@ -196,7 +192,7 @@ if (Meteor.isClient) {
           status : status,
           owner: Meteor.userId(),
           createdAt: new Date(),
-          gridName: Session.get('grid').name
+          gridName: 'exercise'
         });
       } else {
         Days.remove(this._id);
