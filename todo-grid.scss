@@ -1,0 +1,142 @@
+/* CSS declarations go here */
+
+@mixin clearfix {
+  overflow: hidden;
+  zoom: 1;
+}
+
+* {
+	box-sizing:border-box;
+}
+
+$green : #3deca8;
+$gray: #eee;
+.complete-true {
+	background-color: $green;
+	color:white;
+}
+
+.day-grid {
+	width:100%;
+}
+
+.td-week-of {
+	font-size:11px;
+	padding:4px 1px;
+	max-width:70px;
+}
+
+.complete- {
+	background-color:$gray;
+}
+
+.bp-480 {
+	display:none;
+	@media(min-width:480px) {
+		display:inline;
+	}
+}
+
+.bp-768 {
+	display:none;
+	@media(min-width:768px) {
+		display:inline;
+	}
+}
+
+th {
+	text-align: left;
+	font-size:12px;
+	padding:2px 2px 5px;
+	
+}
+
+.short-name, .full-name {
+	display:none;
+}
+
+@media (min-width: 480px) {
+	.letter, .full-name, .shortest-name {
+		display:none;
+	}
+	.short-name {
+		display: inline;
+	}
+}
+@media (min-width: 768px) {
+	.letter, .short-name, .shortest-name {
+		display:none;
+	}
+	.full-name {
+		display: inline;
+	}
+}
+
+
+
+td {
+	&.score {
+		padding:2px 5px;
+	}
+}
+
+td.day {
+	padding:0px;
+	width:12%;
+}
+body {
+	font-family: "Helvetica Neue";
+	font-size:11px;
+	padding:0px;
+	margin:0px;
+}
+
+@for $i from 0 through 7 {
+	.bg-#{$i} {
+		background-color: mix($green, $gray, $i/7 * 100);
+	}
+}
+
+#main {
+	padding:10px;
+}
+
+.grid-text-input {
+	background-color: transparent;
+	padding:8px 12px;
+	margin:0px;
+	border:0px;
+	width:100%;
+}
+
+.main-nav {
+	display: none;
+	background-color: $green;
+	display:block;
+	min-height: 55px;
+	border-bottom:10px solid darken($green, 3);
+	.logo {
+		max-height:60px;
+		height:50px;
+		min-height:40px;
+		display:block;
+		background-color: white;
+	}
+	.logo-container {
+		float:left;
+		max-width:30%;
+	}
+	.status-container {
+		float:left;
+		width:50%;
+	}
+	.login-container {
+		float:right;
+	}
+	#login-dropdown-list.accounts-dialog {
+		right:15px;
+		top:24px;
+		left:auto;
+	}
+}
+

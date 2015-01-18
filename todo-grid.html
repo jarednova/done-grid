@@ -1,0 +1,71 @@
+<head>
+  <title>todo-grid</title>
+</head>
+
+<body>
+  <nav class="main-nav">
+  	<div class="logo-container">
+		<img src="/done-grid-logo.svg" class="logo"/>
+	</div>
+	<div class="status-container">
+		{{#if currentUser }}
+		<h3>For {{currentUser.profile.name}}</h3>
+		{{/if }}
+		<h4>Grid: {{grid.name }}</h4>
+	</div>
+	<div class="login-container">
+		<a class="js-new-grid">+</a>
+		{{> loginButtons}}
+	</div>
+  </nav>
+  
+  <div id="main">
+<table class="day-grid">
+	<tr>
+		<th>Week <span class="bp-768">of</span></th>
+		{{#each daysOfWeek }}
+			<th>
+				<span class="letter">{{letter}}</span>
+				<span class="short-name">{{shortName}}</span>
+				<span class="full-name">{{fullName}}</span>
+			</th>
+		{{/each}}
+		<th>Score</th>
+	</tr>
+	{{#each weeks}}
+ 		{{> week}}
+  	{{/each}}
+</table>
+</div>
+
+<label class="show-total-score">
+	<input type="checkbox" checked="{{showTotalScore}}" />
+  	Show Total Score
+</label>
+</body>
+
+<template name="week">
+	<tr>
+		<td class="td-week-of">
+			<span class="shortest-name">
+				{{formatDate days.[0].date "M/D"}}
+			</span>
+			<span class="short-name">
+				{{formatDate days.[0].date "MMM D"}}
+			</span>
+			<span class="full-name">
+				{{formatDate days.[0].date "MMM D YYYY"}}
+			</span>
+		</td>
+		{{#each days}}
+			{{> day}}
+		{{/each}}
+		<td class="score bg-{{score}}">{{score}}</td>
+	</tr>
+</template>
+
+<template name="day">
+	<td class="day {{slug}} complete-{{status}} js-count-day" data-date="{{date}}" data-status="{{status}}">
+		<input type="text" class="grid-text-input" value="{{note}}"/>
+	</td>
+</template>
