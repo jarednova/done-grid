@@ -7,11 +7,11 @@ function User(userId) {
 }
 
 User.prototype.getDefaultGrid = function() {
-  var Days = Session.get('Days');
-  var day = Days.findOne( {owner: this.userId, gridName: { $exists: true }}, {sort: {createdAt: -1}} );
+ // var Days = Session.get('Days');
+  var day = Days.findOne( {owner: this.userId}, {sort: {createdAt: -1}} );
   //var day = Days.findOne( {owner: this.userId} );
   console.log(day);
-  var grid = new Grid(this.userId, day.gridName);
+  var grid = new Grid(this.userId);
   return grid;
 }
 
@@ -32,6 +32,7 @@ Grid.prototype.isNumeric = function() {
 }; 
 
 Grid.prototype.name = function() {
+  return 'exercise';
   return this.gridName;
 }
 
@@ -120,8 +121,8 @@ function buildWeek( startDate, Days ) {
 function buildDay( date, Days ) {
   var myDate = new Date(date);
 
-  var day = Meteor.subscribe('day', Meteor.userId, myDate, Session.get('grid').name);
-  
+  //var day = Meteor.subscribe('day', Meteor.userId, myDate, 'exercise');
+  var day = Days.findOne({date:myDate, owner: Meteor.userId(), gridName: 'exercise' });
   if (!day) {
     day = {};
     day.date = new Date(myDate);
