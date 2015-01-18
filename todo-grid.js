@@ -1,6 +1,4 @@
 var Days = new Mongo.Collection("days");
-//Session.set('Days', Days);
-console.log('Days', Days);
 var start = new Date();
 
 function User(userId) {
