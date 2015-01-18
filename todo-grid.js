@@ -5,6 +5,8 @@ function User(userId) {
   this.userId = userId;
 }
 
+
+
 User.prototype.getDefaultGrid = function() {
   var day = Days.findOne( {owner: this.userId}, {sort: {createdAt: -1}} );
   var grid = new Grid(this.userId, 'exercise');
