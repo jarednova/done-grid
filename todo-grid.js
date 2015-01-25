@@ -5,8 +5,6 @@ function User(userId) {
   this.userId = userId;
 }
 
-
-
 User.prototype.getDefaultGrid = function() {
   var day = Days.findOne( {owner: this.userId}, {sort: {createdAt: -1}} );
   var grid = new Grid(this.userId, 'exercise');
@@ -24,9 +22,69 @@ function Grid(userId, gridName) {
   this.name = this.gridName;
 }
 
-Grid.prototype.isNumeric = function() {
+Grid.prototype.set = function(key, value) {
+  this[key] = value;
+}
 
-}; 
+Grid.prototype.getWeeks = function( startDate, limit ) {
+  var weeks = this.buildWeeks(startDate, limit);
+  return weeks;
+};
+
+Grid.prototype.buildWeeks = function( startDate, limit ) {
+  var weeks = new Array();
+  var $startDate = moment(startDate);
+  if (typeof startDate == 'string') {
+    $startDate = moment(startDate, "YYYYMMDD");
+  }
+  do {
+    $startDate = $startDate.subtract(1, 'days');
+  } while ($startDate.format('dddd') != 'Sunday');
+  
+  for (var i = 0; i < limit; i++) {
+    var week = this.buildWeek($startDate);
+    $startDate = $startDate.add(7, 'days');
+    weeks.push(week);
+  }
+  console.log(weeks);
+  return weeks;
+} 
+
+Grid.prototype.buildWeek = function( startDate ) {
+  var week = {};
+  week.days = new Array();
+  var $startDate = moment(startDate, "YYYYMMDD");
+  var score = 0;
+  for (var i = 0; i < 7; i++) {
+    var day = this.buildDay($startDate);
+    if (day.note) {
+      score++;
+    }
+    week.days.push(day);
+    $startDate = $startDate.add(1, 'days');
+  }
+  week.score = score;
+  return week;
+};
+
+Grid.prototype.buildDay = function( date ) {
+  var myDate = new Date(date);
+  //var day = Meteor.subscribe('day', Meteor.userId, myDate, 'exercise');
+  var day = this.Days.findOne({date:myDate, owner: Meteor.userId(), gridName: 'exercise' });
+  console.log('day', day);
+  if (!day) {
+    day = {};
+    day.date = new Date(myDate);
+    day.status = false;
+    day.note = false;
+    day.slug = date.format('dddd').toLowerCase();
+  } else if (day && day.note) {
+    day.status = true;
+  } else {
+    day.status = false;
+  }
+  return day;
+}
 
 function onDayEnter(event) {
   var $input = $(event.currentTarget);
@@ -72,69 +130,19 @@ function getUsername() {
   }
 }
 
-function buildWeeks( startDate, limit, Days ) {
-  console.log('buildWeeks');
-  var weeks = new Array();
 
-  var $startDate = moment(startDate);
 
-  if (typeof startDate == 'string') {
-    $startDate = moment(startDate, "YYYYMMDD");
-  }
 
-  do {
-    $startDate = $startDate.subtract(1, 'days');
-  } while ($startDate.format('dddd') != 'Sunday');
-  
-  for (var i = 0; i < limit; i++) {
-    var week = buildWeek($startDate, Days);
-    $startDate = $startDate.add(7, 'days');
-    weeks.push(week);
-  }
-  return weeks;
-}
 
-function buildWeek( startDate, Days ) {
-  var week = {};
-  week.days = new Array();
-  var $startDate = moment(startDate, "YYYYMMDD");
-  var score = 0;
-  for (var i = 0; i < 7; i++) {
-    var day = buildDay($startDate, Days);
-    if (day.note) {
-      score++;
-    }
-    week.days.push(day);
-    $startDate = $startDate.add(1, 'days');
-  }
-  week.score = score;
-  return week;
-}
 
-function buildDay( date, Days ) {
-  var myDate = new Date(date);
-
-  //var day = Meteor.subscribe('day', Meteor.userId, myDate, 'exercise');
-  var day = Days.findOne({date:myDate, owner: Meteor.userId(), gridName: 'exercise' });
-  console.log('day', day);
-  if (!day) {
-    day = {};
-    day.date = new Date(myDate);
-    day.status = false;
-    day.note = false;
-    day.slug = date.format('dddd').toLowerCase();
-  } else if (day && day.note) {
-    day.status = true;
-  } else {
-    day.status = false;
-  }
-  return day;
-}
 
 if (Meteor.isClient) {
   Template.grid.helpers({
     weeks : function(){
-      return buildWeeks(start, 10, Days);
+      var grid = new Grid();
+      grid.set('Days', Days);
+      return grid.getWeeks(start, 10);
+      //return buildWeeks(start, 10, Days);
     },
     daysOfWeek : buildDaysOfWeek(),
   });
