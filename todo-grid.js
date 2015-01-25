@@ -11,9 +11,6 @@ User.prototype.getDefaultGrid = function() {
   return grid;
 }
 
-
-
-
 function getUsername() {
   var user = Meteor.user();
   if ( user ) { 
@@ -24,11 +21,6 @@ function getUsername() {
     }
   }
 }
-
-
-
-
-
 
 
 if (Meteor.isClient) {
@@ -64,8 +56,6 @@ if (Meteor.isClient) {
 
   });
 }
-
-
 
 
 
