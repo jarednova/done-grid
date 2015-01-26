@@ -43,6 +43,12 @@ if (Meteor.isClient) {
       var gridName = prompt('Enter a name for your grid');
       var grid = new Grid(Meteor.userId(), gridName);
       Session.set('grid', grid);
+    },
+    "click .js-add-week-start" : function(event) {
+      Meteor.call('addWeek', -1);
+    },
+    "click .js-add-week-end" : function(event) {
+      Meteor.call('addWeek', 1);
     }
   });
 
