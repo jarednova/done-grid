@@ -1,4 +1,3 @@
-Days = new Mongo.Collection("days");
 var start = new Date();
 
 function User(userId) {
@@ -59,7 +58,12 @@ if (Meteor.isClient) {
   });
 
   Meteor.startup(function () {
-
+    console.log('startup!');
+    var start = Meteor.call('getStart', function(error, start) {
+      console.log('start = ', start);
+      Session.set('start', start);
+    });
+    console.log('start = ' + start);
   });
 }
 
@@ -68,6 +72,7 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
+
   });
 
   Meteor.publish('day', function(userId, myDate, gridName) {
